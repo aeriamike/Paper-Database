@@ -1,0 +1,162 @@
+/*CMPT 354 Lab Assignment 3*/
+/*Wen Xuan Xie 301259066 E100*/
+
+/*Part 1*/
+/*
+/*Construct A*/
+SELECT DISTINCT P1.paperID, P1.title
+FROM Papers P1
+
+EXCEPT
+ 
+SELECT  DISTINCT P2.paperID, P2.title
+FROM Citations C1, Papers P2
+WHERE P2.paperID = C1.citationID 
+
+
+/*Construct B*/
+SELECT P.paperID, P.title
+FROM Papers P
+WHERE P.paperID NOT IN (
+SELECT C.citationID
+FROM Citations C
+GROUP BY C.citationID
+)
+*/
+
+
+
+/*Part 2*/
+/*
+/*Construct A*/
+SELECT DISTINCT A1.authorID, A1.firstName, A1.lastName
+FROM Authors A1, PapersByAuthor PA, Papers P
+WHERE A1.authorID = PA.authorID AND PA.paperID = P.paperID AND NOT (P.venueID = '4' OR P.venueID = '5')
+
+EXCEPT
+
+SELECT DISTINCT  A2.authorID, A2.firstName, A2.lastName
+FROM Authors A2, PapersByAuthor PA, Papers P
+WHERE A2.authorID = PA.authorID AND PA.paperID = P.paperID AND (P.venueID = '4' OR P.venueID = '5')
+
+
+/*Construct B*/
+SELECT DISTINCT PA.authorID, A.firstName, A.lastName
+FROM (PapersByAuthor PA JOIN Papers P ON P.paperID = PA.paperID) JOIN Authors A ON A.authorID = PA.authorID
+WHERE PA.authorID NOT IN (
+
+SELECT DISTINCT  A2.authorID
+FROM Authors A2, PapersByAuthor PA, Papers P
+WHERE A2.authorID = PA.authorID AND PA.paperID = P.paperID AND (P.venueID = '4' OR P.venueID = '5')
+
+)
+*/
+
+
+
+/*Part 3*/
+/*
+SELECT DISTINCT A.authorID, A.firstName, A.lastName
+FROM Authors A, PapersByAuthor PA, Papers P
+WHERE A.authorID = PA.authorID AND PA.paperID = P.paperID AND (P.venueID = '4' OR P.venueID = '5')
+
+EXCEPT
+
+SELECT DISTINCT A.authorID, A.firstName, A.lastName
+FROM Authors A, PapersByAuthor PA, Papers P
+WHERE A.authorID = PA.authorID AND PA.paperID = P.paperID AND NOT (P.venueID = '4' OR P.venueID = '5')
+
+*/
+
+/*Part 4*/
+/*A is not correct. Despite the query tries to use an author table and join two identical paper tables for identifying
+paper from 2012 and 2013, the WHERE condition does not return any result. This is because the two Paper tables
+merged their year column into one during the join, which leads to having only one column about the published year. 
+The conditions of finding year 2012 in one column and year 2013 in other column does not work.*/
+
+/*B is not correct. The result of the query shows a list of authors who published a paper in 2012, but the query
+also shows all the 2013 paper exist in the database along with the listed author, where some of those papers
+are not published by those authors. */
+
+/*C is correct. The condition allows the query to search for author who published paper from 2012
+from one table and look for 2013 paper from the other paper, while equating the author ids from
+each table to find the authors who published paper in 2012 and 2013.  */
+
+
+
+
+/*Part 5*/
+
+/*
+SELECT V1.venueID, count(result.venueID) as numAuthor
+FROM(
+SELECT  V.venueID
+FROM (Papers P JOIN PapersByAuthor PA ON PA.paperID = P.paperID) JOIN Venues V
+on V.venueID = P.venueID
+GROUP BY V.venueID, PA.authorID) as result, Venues V1
+WHERE V1.venueID = result.venueID
+GROUP BY V1.venueID
+
+*/
+
+
+
+/*Part 6*/
+/*
+SELECT anumber.authorID, anumber.coAuthorsNumber, apaper.coauthoredPapers
+FROM (
+(
+SELECT PA1.authorID, count(PA2.authorID) as coAuthorsNumber
+FROM PapersByAuthor PA1 JOIN PapersByAuthor PA2 ON PA1.paperID = PA2.paperID
+WHERE PA1.authorID <> PA2.authorID
+GROUP BY PA1.authorID
+) as anumber
+
+JOIN
+
+(
+SELECT A.authorID, count(A.authorID) as coauthoredPapers
+FROM(
+
+SELECT PA1.authorID
+FROM (PapersByAuthor PA1 JOIN PapersByAuthor PA2 ON PA1.paperID = PA2.paperID) JOIN Papers P ON PA1.paperID = P.paperID
+WHERE PA1.authorID <> PA2.authorID 
+GROUP BY PA1.authorID, P.paperID) as result, Authors A
+
+WHERE result.authorID = A.authorID
+GROUP BY A.authorID
+) as apaper on anumber.authorID = apaper.authorID
+)
+*/
+
+/*Part 7*/
+
+
+/*
+SELECT C.citationID, C.title
+FROM(
+SELECT C1.citationID, P.title, count(C1.citationID) as citCount, rank() over (ORDER BY count(C1.citationID) DESC) as rnk
+FROM Citations C1 JOIN Papers P on C1.citationID = P.paperID
+GROUP BY C1.citationID, P.title
+) as C 
+WHERE rnk = 1
+*/
+
+
+/*Part 8*/
+
+/*
+SELECT PA.authorID, count(P.paperID) as count2012
+FROM PapersByAuthor PA JOIN Papers P on PA.paperID = P.paperID
+WHERE P.year = 2012
+GROUP BY PA.authorID
+HAVING count(P.paperID) >= 2
+
+INTERSECT
+
+SELECT PA.authorID, count(P.paperID) as count2013
+FROM PapersByAuthor PA JOIN Papers P on PA.paperID = P.paperID
+WHERE P.year = 2013
+GROUP BY PA.authorID
+HAVING count(P.paperID) >= 3
+*/

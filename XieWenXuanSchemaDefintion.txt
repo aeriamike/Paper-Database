@@ -1,0 +1,30 @@
+/*CMPT 354 Lab Assigment 1: Schema Definition*/
+/*Wen Xuan Xie 301259066 E200*/
+
+/*create schema (Labo1)*/
+The lab starts with a creation of database schema that is used to contain
+a collection of relations specified by the lab requirements. The schema
+has an author and a writing relational model which has information
+regarding to writer and works published in DBLP respectively.
+
+
+
+/*create table of paper writer (Labo1.writer)*/
+
+Labo1.writer (Author char, email char)
+Keys of Labo1: {Author}
+
+This table contains a set of attributes related to authors inserted into 
+the database. It keeps the name (Author) and email (email) of the authors whose works 
+are posted in DBLP. The author is a primary key in this table because every 
+writer's name stored in this table are unique.
+
+/*create a table of published works (Labo1.paper)*/
+
+Labo1.paper (title char, Author char, abstract char, yearpub int, venue char)
+Keys of Labo1: {Author}
+
+This table stores details about the works in bibliographical format.
+It keeps titles, authors, abstracts, year, and venue about the paper.
+The author in this table is set as a foreign key which connects to 
+the author primary key from Labo1.writer.

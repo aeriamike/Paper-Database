@@ -1,0 +1,115 @@
+/*CMPT 354 Lab Assigment 2: Schema and Queries*/
+/*Wen Xuan Xie 301259066 E200*/
+
+/*Task 1: Create Schema */
+
+CREATE TABLE Venues
+(
+venueID int PRIMARY KEY,
+name varchar(100),
+acronym varchar(16),
+venuetype char (10)
+
+);
+
+CREATE TABLE Authors
+(
+authorID int PRIMARY KEY,
+firstName varchar(32),
+lastName varchar(32),
+email varchar(32)
+
+);
+
+CREATE TABLE Papers
+(
+paperID int PRIMARY KEY,
+title varchar(100),
+paperyear int,
+venueID int,
+FOREIGN KEY (venueID) REFERENCES Venues(venueID)
+);
+
+CREATE TABLE PapersByAuthor
+(
+authorID int,
+paperID int,
+FOREIGN KEY (authorID) REFERENCES Authors(authorID),
+FOREIGN KEY (paperID) REFERENCES Papers(paperID)
+);
+
+CREATE TABLE Citations
+(
+paperID int,
+citationID int,
+FOREIGN KEY (paperID) REFERENCES Papers(paperID),
+FOREIGN KEY (citationID) REFERENCES Papers(paperID)
+
+);
+
+/*Task 3: SQL Queries */
+
+/* Part a */
+
+SELECT P.title
+FROM Papers P
+WHERE P.paperyear=2012
+
+/* Part b */
+
+
+SELECT A.firstName, A.lastName
+FROM Authors A, Papers P, PapersByAuthor PA
+WHERE PA.authorID = A.authorID AND  P.paperID = PA.paperID AND P.paperyear=2012
+
+/*Part c*/
+
+SELECT DISTINCT P1.title
+FROM Papers P1
+
+EXCEPT
+ 
+SELECT  DISTINCT P2.title
+FROM Citations C1, Papers P2
+WHERE P2.paperID = C1.citationID 
+
+/*Part d*/
+
+SELECT PA1.authorID, PA2.authorID
+FROM PapersByAuthor PA1 JOIN PapersByAuthor PA2 ON PA1.paperID = PA2.paperID
+WHERE PA1.authorID <> PA2.authorID
+
+/*Part e*/
+
+SELECT DISTINCT A.authorID, A.firstName, A.lastName
+FROM PapersbyAuthor PA3 JOIN Authors A ON PA3.authorID = A.authorID
+WHERE PA3.authorID IN
+(
+SELECT DISTINCT PA1.authorID
+FROM PapersByAuthor PA1
+WHERE EXISTS (SELECT *
+			  FROM PapersByAuthor PA2
+			  WHERE PA1.paperID <> PA2.paperID AND PA1.authorID = PA2.authorID)
+			  )
+
+
+/*Part f*/
+
+SELECT DISTINCT V.name
+FROM Venues V JOIN (PapersByAuthor PA1 JOIN Papers P ON PA1.paperID = P.paperID) ON P.venueID = V.venueID
+WHERE P.paperyear = 2013 AND EXISTS (SELECT *
+			  FROM PapersByAuthor PA2, Papers P2
+			  WHERE PA1.paperID <> PA2.paperID AND PA1.authorID = PA2.authorID )
+
+
+/*Part g*/
+
+SELECT DISTINCT P1.title
+FROM papers P1 JOIN Citations C1 ON C1.paperID = P1.paperID
+WHERE P1.paperyear < (SELECT MAX(P2.paperyear)
+						FROM Papers P2 JOIN Citations ON citationID=P2.paperID);
+
+
+
+
+

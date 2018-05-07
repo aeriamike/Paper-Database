@@ -1,0 +1,76 @@
+/*CMPT 354 Lab Assignment 1: Schema*/
+/* Wen Xuan Xie 301259066 E200 */
+
+
+/* create schema */
+CREATE SCHEMA Labo1
+GO
+
+/*create table of paper writer*/
+CREATE TABLE Labo1.writer
+(
+Author varchar(100) PRIMARY KEY,
+email varchar(50),
+
+);
+
+/*create a table of published works*/
+CREATE TABLE Labo1.paper
+(
+title varchar(100) NOT NULL,
+Author_one varchar(100) NOT NULL,
+Author_two varchar(100),
+Author_three varchar(100),
+abstract varchar(1000),
+yearpub int,
+venue varchar(10),
+
+FOREIGN KEY (Author_one) REFERENCES Labo1.writer(Author),
+FOREIGN KEY (Author_two) REFERENCES Labo1.writer(Author),
+FOREIGN KEY (Author_three) REFERENCES Labo1.writer(Author)
+);
+
+/*Insert Authors and 10 Publications*/
+
+/Insert Author's information*/
+INSERT INTO Labo1.writer VALUES ('M.Gurunath Reddy','mgreddy@gmail.com');
+INSERT INTO Labo1.writer VALUES ('K.Sreenivasa Rao','reenrao@hotmail.com');
+INSERT INTO Labo1.writer VALUES ('Ramakrishna B Bairi','bairi@hotmail.com');
+INSERT INTO Labo1.writer VALUES ('Ambha A','aambha@gmail.com');
+INSERT INTO Labo1.writer VALUES ('Ganesh Ramakrishnan','ganesh@gmail.com');
+INSERT INTO Labo1.writer VALUES ('Miquel Salicru','msalicru@gmail.com');
+INSERT INTO Labo1.writer VALUES ('Pedro Sanchez','pedsanchez@gmail.com');
+
+INSERT INTO Labo1.writer VALUES ('Joaquin Perez O.','msalicru@gmail.com');
+INSERT INTO Labo1.writer VALUES ('Juan Frausto S.','juanfs@gmail.com');
+INSERT INTO Labo1.writer VALUES ('Laura Cruz R.','cruzr@hotmail.com');
+
+INSERT INTO Labo1.writer VALUES ('Niels Aage','aage@gmail.com');
+INSERT INTO Labo1.writer VALUES ('Jun Wu','jjjjwu@gmail.com');
+INSERT INTO Labo1.writer VALUES ('Ole Sigmund','osig@gmail.com');
+
+INSERT INTO Labo1.writer VALUES ('Asger Nyman Christiansen','anchristiansen@hotmail.com');
+INSERT INTO Labo1.writer VALUES ('Joe Alexandersen','joealex@hotmail.com');
+INSERT INTO Labo1.writer VALUES ('Hu Xiaowei','xiaoweihu@gmail.com');
+INSERT INTO Labo1.writer VALUES ('Michael Fu','mikefu@hotmail.com');
+
+INSERT INTO Labo1.writer VALUES ('Cheng Jie','chengjie@gmail.com');
+INSERT INTO Labo1.writer VALUES ('Csaba Szepersvari','csaba@hotmail.com');
+
+INSERT INTO Labo1.writer VALUES ('Prashanth L. A.','prasla@gmail.com');
+
+/*Insert 10 Papers*/
+
+INSERT INTO Labo1.paper VALUES ('Predominant melody extraction from vocal polyphonic music signal', 'M.Gurunath Reddy','K.Sreenivasa Rao',NULL,'A combined spectro-temporal based method is proposed to derive the predominant melody from vocal polyphonic music signals.', '2016','IEEE');
+INSERT INTO Labo1.paper VALUES ('Learning to Generate Diversified Query Interpretations using Biconvex optimization', 'Ramakrishna B Bairi','Ambha A','Ganesh Ramakrishnan','The wealth of information present in the World Wide Web has made internet search a de-facto medium for obtaining any required information', '2013','IJCNLP');
+INSERT INTO Labo1.paper VALUES ('Pseudocontinuity in Hierarchial classifications', 'Miquel Salicru','Pedro Sanchez', NULL ,'Geometrical representation of objects by means of tree models is based on order relations of the inerdistances', '1999','Info Sci');
+INSERT INTO Labo1.paper VALUES ('A Machine Learning Approach for Algorithm Predictors', 'Joaquin Perez O.','Juan Frausto S.','Laura Cruz R.','The paperl deads with heuristic algorithm selection, which can be stated as follows: given a set of solved instances of a NP-hard problem, for a new instance to predict which algorithm solves it better.', '2004','LNCS');
+
+INSERT INTO Labo1.paper VALUES ('Infill Optimization for Addictive Manufacturing - Approaching Bone-Like Porous Structures', 'Jun Wu','Niels Aage','Ole Sigmund','Porous structure such as trabecular bone are widely seen in nature.', '2018','IEEE');
+INSERT INTO Labo1.paper VALUES ('Combined Shape and Topology Optimization of 3D Structures', 'Asger Nyman Christiansen','Niels Aage','Ole Sigmund','We present a method for authomatic generation of 3D models based on shape and topology optimization.', '2014','SMI');
+INSERT INTO Labo1.paper VALUES ('Large scale three-dimensional topology optimisation of heat sinks cooled by natural convection', 'Joe Alexandersen','Niels Aage','Ole Sigmund','The work presents the application of destiny-based topology optimisation to the design of three-dimensional heat sinks cooled by natural convection.', '2015','CoRR');
+
+INSERT INTO Labo1.paper VALUES ('Variance-constrained actor-critic algorithms for discounted and average reward MDPs', 'Hu Xiaowei','Prashanth L. A.','Csaba Szepersvari','A popular class of algorithms for convex optimization and online learning with bandit feedback rely on constructing noisy gradient estimates.', '2016','PMLR');
+INSERT INTO Labo1.paper VALUES ('Cumulative Prospect Theory Meets Reinforcement Learning: Prediction and Control', 'Michael Fu','Prashanth L. A.','Cheng Jie','Cumulative prospect theory is known to model human decisions well, with substantial empirical evidence supporting this claim.', '2016','ALT');
+INSERT INTO Labo1.paper VALUES ('Policy Gradients for CVaR-Constrained MDPs', 'Prashanth L. A.',NULL,NULL,'Cumulative prospect theory is known to model human decisions well, with substantial empirical evidence supporting this claim.', '2014','CoRR');
+
